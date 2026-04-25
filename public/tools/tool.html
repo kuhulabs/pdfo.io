@@ -1,0 +1,41 @@
+<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>PDF Tool — PDFo by Kuhu Labs</title><meta name='description' content='Use PDFo online PDF tool.'><meta property='og:title' content='PDF Tool — PDFo'>
+<script src='https://cdn.tailwindcss.com'></script><link rel='stylesheet' href='/css/styles.css'><script defer src='/js/app.js'></script></head>
+<body class='bg-white'><noscript><div class='bg-yellow-100 p-4 text-center'>JavaScript is disabled. Upload and processing controls require JavaScript.</div></noscript>
+<div class='max-w-5xl mx-auto p-5'><a href='/' class='text-3xl font-extrabold'>PDF<span class='brand-o'>o</span></a>
+<h1 id='toolTitle' class='text-4xl font-bold mt-6'>Tool</h1><p id='toolDesc' class='text-gray-600 mt-2'></p>
+<div id='dropzone' class='dropzone mt-6 border-2 border-dashed rounded-xl p-10 text-center cursor-pointer bg-[#F8F8F8]'>Drop your PDF here or click to upload<input id='fileInput' class='hidden' type='file' multiple></div>
+<ul id='fileList' class='mt-4 space-y-2'></ul>
+<div id='options' class='bg-[#F8F8F8] p-4 rounded mt-4'></div>
+<button id='processBtn' class='mt-5 bg-[#FF5C5C] text-white py-3 px-8 rounded text-lg'>Process</button>
+<div class='mt-4 w-full bg-gray-200 rounded h-3 overflow-hidden'><div id='bar' class='bg-[#3730A3] h-3 w-0 transition-all'></div></div>
+<section id='result' class='hidden mt-8 border rounded p-5'><h2 class='text-2xl font-bold'>Result</h2><div class='mt-2 text-sm text-gray-600'>Before: <span id='before'>-</span> | After: <span id='after'>-</span></div><div class='mt-2 bg-[#F8F8F8] p-6 rounded'>Preview thumbnail placeholder</div><div class='mt-4 flex gap-2'><a id='download' class='bg-[#3730A3] text-white px-4 py-2 rounded'>Download</a><button onclick='location.reload()' class='border px-4 py-2 rounded'>Process Another</button></div></section>
+<section class='mt-12'><h3 class='text-xl font-bold'>Related tools</h3><div id='related' class='grid sm:grid-cols-3 gap-3 mt-3'></div></section></div>
+<script>
+const slug=location.pathname.split('/').pop();let uploaded=[];let uploadedMeta=[];
+const optionsMap={
+ 'merge-pdf':'<label class="text-sm">Reorder files by dragging list items before processing.</label>',
+ 'compress-pdf':'<label>Quality</label><select id="quality" class="border rounded p-2 ml-2"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>',
+ 'split-pdf':'<label>Page range</label><input id="range" class="border p-2 rounded ml-2" placeholder="1-3,5,7-10">',
+ 'rotate-pdf':'<label>Pages</label><input id="pages" class="border p-2 rounded ml-2" placeholder="all"><label class="ml-3">Angle</label><select id="angle" class="border rounded p-2 ml-2"><option>90</option><option>180</option><option>270</option></select>',
+ 'watermark-pdf':'<input id="wmText" class="border p-2 rounded" placeholder="Watermark text"><input id="fontSize" type="number" class="border p-2 rounded ml-2 w-24" value="36"><input id="opacity" type="number" step="0.05" class="border p-2 rounded ml-2 w-24" value="0.25">',
+ 'add-page-numbers':'<select id="position" class="border p-2 rounded"><option value="footer-center">Footer center</option><option value="footer-left">Footer left</option><option value="footer-right">Footer right</option><option value="header-center">Header center</option></select><input id="start" class="border p-2 rounded ml-2 w-24" value="1">'
+};
+
+fetch('/api/tools').then(r=>r.json()).then(data=>{const meta=data[slug];if(meta){document.title=meta.title;toolTitle.textContent=slug.replace(/-/g,' ').replace(/\b\w/g,m=>m.toUpperCase());toolDesc.textContent=meta.desc}options.innerHTML=optionsMap[slug]||'<p class="text-sm text-gray-600">No extra options required for this tool.</p>';TOOL_LIST.filter(([s])=>s!==slug).slice(0,3).forEach(([s,n])=>{const a=document.createElement('a');a.href=`/tools/${s}`;a.className='border rounded p-3 hover:bg-[#F8F8F8]';a.textContent=n;related.appendChild(a);})})
+
+function renderFiles(){fileList.innerHTML='';uploadedMeta.forEach((f,i)=>{const li=document.createElement('li');li.draggable=true;li.className='border rounded p-2 flex justify-between';li.innerHTML=`<span>${f.name} (${bytes(f.size)})</span><button class="text-red-600">Remove</button>`;li.querySelector('button').onclick=()=>{uploaded.splice(i,1);uploadedMeta.splice(i,1);renderFiles()};fileList.appendChild(li);})}
+
+dropzone.onclick=()=>fileInput.click();fileInput.onchange=()=>handleFiles(fileInput.files);
+;['dragenter','dragover'].forEach(ev=>dropzone.addEventListener(ev,e=>{e.preventDefault();dropzone.classList.add('dragover')}));
+;['dragleave','drop'].forEach(ev=>dropzone.addEventListener(ev,e=>{e.preventDefault();dropzone.classList.remove('dragover')}));
+dropzone.addEventListener('drop',e=>handleFiles(e.dataTransfer.files));
+dropzone.addEventListener('touchstart',()=>fileInput.click());
+
+async function handleFiles(fileListObj){const fd=new FormData();[...fileListObj].forEach(f=>fd.append('files',f));const r=await fetch('/api/upload',{method:'POST',body:fd,headers:{Authorization:`Bearer ${localStorage.getItem('token')||''}`}});const d=await r.json();if(!r.ok)return showToast(d.error,'error');uploadedMeta.push(...d.files);uploaded.push(...d.files.map(f=>f.fileId));renderFiles();showToast('Files uploaded');}
+
+processBtn.onclick=async()=>{if(!uploaded.length)return showToast('Upload at least one file','error');processBtn.disabled=true;processBtn.innerHTML='<span class="inline-flex items-center gap-2"><span class="spinner"></span>Processing</span>';let p=0;const iv=setInterval(()=>{p=Math.min(95,p+5);bar.style.width=p+'%'},180);
+const options={quality:quality?.value,range:range?.value,pages:pages?.value,angle:angle?.value,text:wmText?.value,fontSize:fontSize?.value,opacity:opacity?.value,position:position?.value,start:start?.value};
+try{const r=await fetch(`/api/process/${slug}`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${localStorage.getItem('token')||''}`},body:JSON.stringify({fileIds:uploaded,options})});const d=await r.json();if(!r.ok)throw new Error(d.error);bar.style.width='100%';result.classList.remove('hidden');download.href=`/api/download/${d.resultId}`;before.textContent=bytes(d.beforeSize);after.textContent=bytes(d.afterSize);showToast('Processing complete');}catch(e){showToast(e.message,'error')}finally{clearInterval(iv);processBtn.disabled=false;processBtn.textContent='Process'}
+}
+</script></body></html>
