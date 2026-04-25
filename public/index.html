@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDFo — PDF tools that just work.</title><meta name="description" content="PDFo by Kuhu Labs provides fast, privacy-first PDF tools that just work.">
+<meta property="og:title" content="PDFo — PDF tools that just work."><meta property="og:description" content="All your PDF tools in one place.">
+<meta property="og:type" content="website"><meta property="og:url" content="/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%233730A3'/%3E%3Cpath d='M18 46V18h16c7 0 12 5 12 12s-5 12-12 12h-7v4z' fill='%23fff'/%3E%3Ccircle cx='48' cy='48' r='8' fill='%23FF5C5C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="/css/styles.css"><script defer src="/js/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PDFo","applicationCategory":"BusinessApplication","description":"PDF tools that just work.","brand":{"@type":"Brand","name":"Kuhu Labs"}}</script>
+</head>
+<body class="text-gray-800 bg-white">
+<nav class="sticky top-0 bg-white/95 backdrop-blur border-b z-40"><div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+<a class="text-3xl font-extrabold" href="/">PDF<span class="brand-o">o</span></a>
+<div class="hidden md:flex gap-6 text-sm"><a href="#tools">Tools</a><a href="/pricing">Pricing</a><a href="#">Blog</a></div>
+<div class="flex gap-2"><button data-dark-toggle class="border px-3 py-1 rounded">🌙</button><a class="border px-4 py-2 rounded" href="/login">Login</a><a class="bg-[#FF5C5C] text-white px-4 py-2 rounded" href="/signup">Signup</a></div>
+</div></nav>
+<section class="gradient-bg text-white"><div class="max-w-6xl mx-auto px-4 py-20 text-center"><h1 class="text-4xl md:text-6xl font-extrabold">All your PDF tools in one place</h1><p class="mt-4 text-lg opacity-90">PDFo by Kuhu Labs helps you merge, split, convert, and protect PDFs in seconds.</p><div class="mt-8 flex justify-center gap-3"><a class="bg-[#FF5C5C] px-6 py-3 rounded" href="#tools">Try Free Tools</a><a class="bg-white text-[#3730A3] px-6 py-3 rounded" href="#tools">See All Tools</a></div></div></section>
+<section id="tools" class="max-w-6xl mx-auto px-4 py-16"><h2 class="text-3xl font-bold mb-6">Popular PDF tools</h2><div id="toolsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div></section>
+<section class="bg-[#F8F8F8] py-14"><div class="max-w-6xl mx-auto px-4"><h2 class="text-3xl font-bold text-center mb-8">How it works</h2><div class="grid md:grid-cols-3 gap-5 text-center"><div class="bg-white p-6 rounded">1. Upload</div><div class="bg-white p-6 rounded">2. Process</div><div class="bg-white p-6 rounded">3. Download</div></div></div></section>
+<section class="max-w-6xl mx-auto px-4 py-16"><h2 class="text-3xl font-bold mb-6">Testimonials</h2><div class="grid md:grid-cols-3 gap-5"><article class="bg-[#F8F8F8] p-6 rounded">"Fast and clean UI." — Priya</article><article class="bg-[#F8F8F8] p-6 rounded">"Exactly what my team needed." — Daniel</article><article class="bg-[#F8F8F8] p-6 rounded">"Best free PDF tools." — Asha</article></div></section>
+<footer class="bg-gray-900 text-white"><div class="max-w-6xl mx-auto px-4 py-12"><div class="flex flex-col md:flex-row justify-between gap-6"><div><p class="text-2xl font-bold">PDF<span class="brand-o">o</span></p><p>PDFo — by Kuhu Labs</p></div><div class="grid grid-cols-2 gap-3 text-sm"><a href="/tools/merge-pdf">All Tools</a><a href="/pricing">Pricing</a><a href="/about">About</a><a href="#">Blog</a><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Service</a></div></div><p class="text-xs mt-8">© 2025 Kuhu Labs. All rights reserved. Files are deleted automatically after 2 hours.</p></div></footer>
+<script>const grid=document.getElementById('toolsGrid');TOOL_LIST.forEach(([slug,name,desc],i)=>{const el=document.createElement('a');el.href=`/tools/${slug}`;el.className='tool-card p-5 border rounded-lg transition bg-white';el.innerHTML=`<div class="text-2xl">${['📎','✂️','🗜️','🖼️','🧾','📝','📄','🔁','💧','🔒','🔓','#'][i]}</div><h3 class="font-bold mt-2">${name}</h3><p class="text-sm text-gray-600">${desc}</p>`;grid.appendChild(el);});</script>
+</body></html>
